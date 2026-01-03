@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from . import schemas,models
 from .database import engine, SessionLocal
 from sqlalchemy.orm import Session
-
+from .hashing import Hash
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -75,7 +75,8 @@ def get_blog(id: int, db: Session = Depends(get_db)):
 
 @app.post("/user")
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
-    new_user = models.User(username=request.username, email=request.email, password=request.password)
+    
+    new_user = models.User(username=request.username, email=request.email, password=Hash().argon2_hash(request.password))
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

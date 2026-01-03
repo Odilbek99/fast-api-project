@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 
 
 class Blog(BaseModel):
@@ -18,4 +18,6 @@ class User(BaseModel):
     username: str
     email: str
     password: str
+
+
 
