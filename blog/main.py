@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, status, Response, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from . import schemas,models
 from .database import engine, SessionLocal
@@ -17,7 +18,7 @@ def get_db():
         db.close()
  
 @app.post("/blog", status_code=status.HTTP_201_CREATED)
-def create_blog(request: schemas.BlogModel, db: Session = Depends(get_db)):
+def create_blog(request: schemas.Blog, db: Session = Depends(get_db)):
     new_blog = models.Blog(title=request.title, body=request.body)
     db.add(new_blog)
     db.commit()
@@ -27,21 +28,35 @@ def create_blog(request: schemas.BlogModel, db: Session = Depends(get_db)):
 
 @app.delete("/blog/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_blog(id: int, db: Session = Depends(get_db)):
-    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
-    if not blog:
+    blog = db.query(models.Blog).filter(models.Blog.id == id)
+    if not blog.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Blog with id {id} not found")
     blog.delete(synchronize_session=False)
     db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"message": f"Blog with id {id} deleted successfully"}
+        )
 
-@app.update("/blog/{id}", status_code=status.HTTP_202_ACCEPTED)
-def update_blog(id: int, request: schemas.BlogModel, db: Session = Depends(get_db)):
+
+@app.put("/blog/{id}", status_code=status.HTTP_202_ACCEPTED)
+def update_blog(
+    id: int,
+    request: schemas.Blog,
+    db: Session = Depends(get_db)
+):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+
     if not blog:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Blog with id {id} not found")
-    blog.update({'title': request.title, 'body': request.body})
+        raise HTTPException(status_code=404, detail="Blog not found")
+
+    blog.title = request.title
+    blog.body = request.body
+
     db.commit()
+    db.refresh(blog)
     return blog
+
 
 
 

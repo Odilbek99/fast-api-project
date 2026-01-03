@@ -23,7 +23,7 @@ def about(id: int):
     return {"data": id}
 
 
-class BlogModel(BaseModel):
+class Blog(BaseModel):
     title: str
     body: str
     published: bool = True
@@ -31,7 +31,7 @@ class BlogModel(BaseModel):
 
 
 @app.post("/blog")
-def create_blog(blog: BlogModel):
+def create_blog(blog: Blog):
     return {"data": f'Blog titled "{blog.title}" created successfully!'}
 
 
