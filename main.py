@@ -1,12 +1,14 @@
+import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
-import uvicorn
 
 app = FastAPI()
+
 
 @app.get("/")
 def index():
     return {"message": "Hello, World!"}
+
 
 @app.get("/about/")
 def about():
@@ -15,7 +17,7 @@ def about():
 
 @app.get("/blog")
 def about(limit):
-    return {"data": f'The limit is {limit}'}
+    return {"data": f"The limit is {limit}"}
 
 
 @app.get("/blog/{id}")
@@ -27,7 +29,6 @@ class Blog(BaseModel):
     title: str
     body: str
     published: bool = True
-
 
 
 @app.post("/blog")

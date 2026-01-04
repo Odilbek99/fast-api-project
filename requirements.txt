@@ -11,3 +11,7 @@ jinja2
 passlib[bcrypt]
 python-multipart
 email-validator
+python-jose[cryptography]
+black 
+isort 
+ruff

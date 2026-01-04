@@ -1,20 +1,19 @@
-from pydantic import BaseModel,Field
+from pydantic import BaseModel, Field
 
 
 class Blog(BaseModel):
     title: str
     body: str
 
-    class Config:  
+    class Config:
         orm_mode = True
-
-
 
 
 class User(BaseModel):
     username: str
     email: str
     password: str
+
 
 class ShowUser(BaseModel):
     username: str
@@ -24,6 +23,7 @@ class ShowUser(BaseModel):
     class Config:
         orm_mode = True
 
+
 class ShowBlog(BaseModel):
     title: str
     body: str
@@ -32,6 +32,16 @@ class ShowBlog(BaseModel):
     class Config:
         orm_mode = True
 
+
 class Login(BaseModel):
     username: str = Field(..., example="johndoe")
     password: str = Field(..., example="strongpassword123")
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: str | None = None

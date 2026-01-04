@@ -1,8 +1,10 @@
-from passlib.context import CryptContext
 import hashlib
 
+from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+
+
 class Hash:
     @staticmethod
     def hash_password(password: str) -> str:

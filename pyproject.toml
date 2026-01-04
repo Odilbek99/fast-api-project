@@ -1,0 +1,21 @@
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+skip-string-normalization = false
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+select = [
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "I",  # isort
+  "B",  # bugbear
+]
+
+ignore = [
+  "E501",  # Black управляет длиной строки
+]
+
+fix = true
