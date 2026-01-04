@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from .. import schemas, models
 from ..database import get_db
 from ..hashing import Hash
+from ..repository import user
 
 
 router = APIRouter(
@@ -13,25 +14,16 @@ router = APIRouter(
 
 @router.post("/",response_model=schemas.ShowUser, status_code=status.HTTP_201_CREATED)
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
-    
-    new_user = models.User(username=request.username, email=request.email, password=Hash().argon2_hash(request.password))
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+    return user.create_user(db, request)
 
 
 @router.get("/", response_model=list[schemas.ShowUser], status_code=status.HTTP_200_OK)
 def get_user(db: Session = Depends(get_db)):
-    user = db.query(models.User).all()
-    return user
+    return user.get_all_users(db)
 
 @router.get("/{id}", response_model=schemas.ShowUser, status_code=status.HTTP_200_OK)
 def get_user(id: int, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.id == id).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Blog with id {id} not found")
-    return user
+    return user.get_user_by_id(db, id)
 
 
 
