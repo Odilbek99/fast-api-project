@@ -3,11 +3,12 @@ import hashlib
 
 
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
-def hash_password(password: str) -> str:
-        sha = hashlib.sha256(password.encode("utf-8")).hexdigest()
-        
-        return pwd_context.hash(sha)
-class Hash():
-    def argon2_hash(self, password: str) -> str:
+class Hash:
+    @staticmethod
+    def hash_password(password: str) -> str:
         sha = hashlib.sha256(password.encode("utf-8")).hexdigest()
         return pwd_context.hash(sha)
+
+    def verify_password(plain_password: str, hashed_password: str) -> bool:
+        sha = hashlib.sha256(plain_password.encode("utf-8")).hexdigest()
+        return pwd_context.verify(sha, hashed_password)

@@ -3,6 +3,7 @@ from ..models import User
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
 from .. import models
+from ..hashing import Hash
 
 
 
@@ -18,7 +19,7 @@ def get_user_by_id(db: Session, user_id: int):
 
 
 def create_user(db: Session, request):
-    new_user = models.User(username=request.username, email=request.email, password=request.password)
+    new_user = models.User(username=request.username, email=request.email, password=Hash.hash_password(request.password))
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

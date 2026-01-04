@@ -3,7 +3,6 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from .. import schemas, models
 from ..database import get_db
-from ..hashing import Hash
 from ..repository import user
 
 
